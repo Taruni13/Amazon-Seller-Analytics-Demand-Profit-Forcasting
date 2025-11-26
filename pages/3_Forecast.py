@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from src.ml import forecast_with_linear_regression
+from src.theme import add_custom_css
+
+st.set_page_config(page_title='Forecast', layout='wide')
+add_custom_css()
 
 st.title('Forecast')
 
@@ -22,8 +26,19 @@ else:
 
     steps = st.number_input('Forecast steps', min_value=7, max_value=365, value=30)
     if st.button('Run simple lag-based forecast'):
-        preds = forecast_with_linear_regression(agg, forecast_steps=steps, lags=7)
+        preds = forecast_with_linear_regression(agg, forecast_steps=int(steps), lags=7)
         last_date = agg.index.max()
-        dates = pd.date_range(start=last_date + pd.Timedelta(1, unit=freq), periods=len(preds), freq=freq)
+        # For monthly frequencies use DateOffset because Timedelta('1M') is ambiguous
+        if freq == 'D':
+            start = last_date + pd.Timedelta(days=1)
+        elif freq == 'W':
+            start = last_date + pd.Timedelta(weeks=1)
+        elif freq == 'M':
+            start = last_date + pd.DateOffset(months=1)
+        else:
+            # Fallback: try one day
+            start = last_date + pd.Timedelta(days=1)
+
+        dates = pd.date_range(start=start, periods=len(preds), freq=freq)
         res = pd.Series(preds, index=dates)
         st.line_chart(pd.concat([agg, res]))

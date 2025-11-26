@@ -33,7 +33,9 @@ def train_models(X: pd.DataFrame, y: pd.Series, test_size: float = 0.2, random_s
         m.fit(X_train, y_train)
         y_pred = m.predict(X_test)
         mae = mean_absolute_error(y_test, y_pred)
-        rmse = mean_squared_error(y_test, y_pred, squared=False)
+        # some sklearn versions don't accept the `squared` kwarg — compute RMSE manually
+        mse = mean_squared_error(y_test, y_pred)
+        rmse = float(np.sqrt(mse))
         results[name] = {'model': m, 'mae': mae, 'rmse': rmse}
 
     return results

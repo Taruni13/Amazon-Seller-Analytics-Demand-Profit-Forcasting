@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
 from src.eda import load_csv, normalize_columns, summarize_df, timeseries_aggregate, plot_timeseries, top_n_products
+from src.theme import add_custom_css
 
 st.set_page_config(page_title='EDA', layout='wide')
+add_custom_css()
 
 st.title('Exploratory Data Analysis')
 

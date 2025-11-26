@@ -1,5 +1,9 @@
 import streamlit as st
 import pandas as pd
+from src.theme import add_custom_css
+
+st.set_page_config(page_title='Insights', layout='wide')
+add_custom_css()
 
 st.title('Business Insights')
 
