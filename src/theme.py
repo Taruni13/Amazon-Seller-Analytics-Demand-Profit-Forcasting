@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-def add_custom_css():
+def add_custom_css(show_navbar=True):
     """Inject the project's global CSS so all pages share the same theme."""
     st.markdown(
         """
@@ -57,9 +57,33 @@ def add_custom_css():
             text-decoration: underline;
         }
 
+        /* --- CUSTOM HEADER (for non-home pages) --- */
+        .custom-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background-color: #111111;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* move title to the right */
+            padding: 0 24px;
+            z-index: 9999;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .custom-header h2 {
+            margin: 0;
+            color: #E87500;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
         /* Layout adjustments */
         .main-block {
-            padding-top: 12px !important;
+            padding-top: 60px !important;
             padding-bottom: 60px; /* space for footer */
             margin-top: 0 !important;
         }
@@ -79,7 +103,7 @@ def add_custom_css():
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: var(--pacific-dark);
+            background-color: #111111;
             color: #ffffff;
             padding: 6px 18px;
             font-size: 13px;
@@ -111,18 +135,48 @@ def add_custom_css():
         unsafe_allow_html=True,
     )
 
-    # Inject a shared floating navbar so every page displays consistent navigation
+    # Conditionally inject navbar only if show_navbar is True (for home page)
+    if show_navbar:
+        st.markdown(
+            """
+            <div class="top-nav">
+                <div class="top-nav-title">Amazon Seller Analytics</div>
+                <div class="top-nav-links">
+                    <a href="#overview">Overview</a>
+                    <a href="#course-details">Course</a>
+                    <a href="#team-details">Team</a>
+                    <a href="#datasets">Datasets</a>
+                    <a href="#contact">Contact</a>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+def add_custom_header(page_title):
+    """Add a custom black header with the page title."""
+    st.markdown(
+        f"""
+        <div class="custom-header">
+            <h2>{page_title}</h2>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def add_custom_footer():
+    """Add a custom black footer with copyright and contact information."""
     st.markdown(
         """
-        <div class="top-nav">
-            <div class="top-nav-title">Amazon Seller Analytics</div>
-            <div class="top-nav-links">
-                <a href="#overview">Overview</a>
-                <a href="#course-details">Course</a>
-                <a href="#team-details">Team</a>
-                <a href="#datasets">Datasets</a>
-                <a href="#contact">Contact</a>
-            </div>
+        <div class="custom-footer">
+            <span>© 2025 University of the Pacific – MSBA Program</span>
+            <span>
+                Contact: 
+                <a href="mailto:t_atodariya@u.pacific.edu">t_atodariya@u.pacific.edu</a> |
+                <a href="mailto:a_gohel@u.pacific.edu">a_gohel@u.pacific.edu</a>
+            </span>
         </div>
         """,
         unsafe_allow_html=True,

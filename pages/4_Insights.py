@@ -1,9 +1,12 @@
 import streamlit as st
 import pandas as pd
-from src.theme import add_custom_css
+from src.theme import add_custom_css, add_custom_header, add_custom_footer
 
 st.set_page_config(page_title='Insights', layout='wide')
-add_custom_css()
+add_custom_css(show_navbar=False)
+add_custom_header('Business Insights')
+
+st.markdown('<div class="main-block">', unsafe_allow_html=True)
 
 st.title('Business Insights')
 
@@ -31,3 +34,6 @@ elif 'country' in df.columns and 'total_profit' in df.columns:
     st.table(loc)
 else:
     st.write('No location profitability columns found')
+
+st.markdown('</div>', unsafe_allow_html=True)
+add_custom_footer()

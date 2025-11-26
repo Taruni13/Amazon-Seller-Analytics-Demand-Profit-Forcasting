@@ -24,7 +24,9 @@ def summarize_df(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
 def timeseries_aggregate(df: pd.DataFrame, date_col: str, value_col: str, freq: str = 'D') -> pd.DataFrame:
     df = df.copy()
     df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
-    agg = df.set_index(date_col).resample(freq)[value_col].sum().reset_index()
+    # Use 'MS' instead of 'M' to avoid FutureWarning
+    resample_freq = 'MS' if freq == 'M' else freq
+    agg = df.set_index(date_col).resample(resample_freq)[value_col].sum().reset_index()
     return agg
 
 

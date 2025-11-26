@@ -2,10 +2,13 @@ import streamlit as st
 from datetime import datetime
 import pandas as pd
 from pathlib import Path
-from src.theme import add_custom_css
+from src.theme import add_custom_css, add_custom_header, add_custom_footer
 
-st.set_page_config(page_title="Suggestion", layout="wide")
-add_custom_css()
+st.set_page_config(page_title='Suggestion', layout='wide')
+add_custom_css(show_navbar=False)
+add_custom_header('Suggestions & Feedback')
+
+st.markdown('<div class="main-block">', unsafe_allow_html=True)
 
 st.title("Suggestions")
 st.write("We welcome suggestions to improve the dashboard. Submit feedback below.")
@@ -47,3 +50,6 @@ if st.checkbox("Show recent suggestions"):
         st.dataframe(df.sort_values("timestamp", ascending=False).head(50))
     else:
         st.info("No suggestions submitted yet.")
+
+st.markdown('</div>', unsafe_allow_html=True)
+add_custom_footer()

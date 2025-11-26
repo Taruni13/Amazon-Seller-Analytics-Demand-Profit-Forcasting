@@ -1,10 +1,13 @@
 import streamlit as st
 import pandas as pd
 from src.eda import load_csv, normalize_columns, summarize_df, timeseries_aggregate, plot_timeseries, top_n_products
-from src.theme import add_custom_css
+from src.theme import add_custom_css, add_custom_header, add_custom_footer
 
 st.set_page_config(page_title='EDA', layout='wide')
-add_custom_css()
+add_custom_css(show_navbar=False)
+add_custom_header('Exploratory Data Analysis')
+
+st.markdown('<div class="main-block">', unsafe_allow_html=True)
 
 st.title('Exploratory Data Analysis')
 
@@ -13,6 +16,10 @@ path = f'data_process/{dataset}'
 
 df = load_csv(path)
 df = normalize_columns(df)
+
+# Cast order_id to string to prevent Arrow serialization issues
+if 'order_id' in df.columns:
+    df['order_id'] = df['order_id'].astype(str)
 
 st.subheader('Sample')
 st.dataframe(df.head(100))
@@ -36,3 +43,6 @@ prod_col = 'product' if 'product' in df.columns else None
 if prod_col:
     top = top_n_products(df, product_col=prod_col, value_col='total_sales', n=10)
     st.bar_chart(top.set_index(prod_col))
+
+st.markdown('</div>', unsafe_allow_html=True)
+add_custom_footer()
