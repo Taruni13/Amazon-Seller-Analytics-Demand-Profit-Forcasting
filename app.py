@@ -124,19 +124,45 @@ def add_custom_css():
         footer {visibility: hidden;}
         footer:after {content: ""; visibility: hidden;}
 
-        /* Sidebar: match main dashboard background and uppercase page names */
-        [data-testid="stSidebar"] {
-            background: var(--pacific-light-bg) !important;
-        }
+        /* --- ENSURE READABLE TEXT IN SYSTEM DARK (NIGHT) MODE --- */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --pacific-orange: #E87500;
+                --pacific-dark: #111111;
+                --pacific-light-bg: #faf6f0;
+            }
 
-        /* Try a few selectors for sidebar text to force uppercase labels */
-        .css-1v3fvcr, .css-1d391kg, .css-1lsmgbg, [data-testid="stSidebar"] .stText, [data-testid="stSidebar"] .css-1v3fvcr {
-            text-transform: uppercase !important;
-            font-weight: 600 !important;
-            letter-spacing: 0.02em;
-            color: var(--pacific-dark) !important;
+            /* keep your light background, but force dark text for readability */
+            .stApp,
+            .main-block,
+            .info-card,
+            .element-container,
+            .stMarkdown,
+            .stText,
+            .stMetric,
+            .stTable,
+            .stDataFrame,
+            .css-1v3fvcr { /* generic Streamlit container selectors */
+                background-color: var(--pacific-light-bg) !important;
+                color: var(--pacific-dark) !important;
+            }
+
+            /* headings, paragraphs, list items, links */
+            h1, h2, h3, h4, p, li, span, a, div {
+                color: var(--pacific-dark) !important;
+            }
+
+            /* override table cells and other common component text */
+            th, td, .stDataFrame td, .stDataFrame th {
+                color: var(--pacific-dark) !important;
+            }
+
+            /* keep navbar/footer contrast */
+            .top-nav { background-color: var(--pacific-dark) !important; }
+            .top-nav-title { color: var(--pacific-orange) !important; }
+            .top-nav-links a { color: #ffffff !important; }
+            .custom-footer { background-color: var(--pacific-dark) !important; color: #ffffff !important; }
         }
-        </style>
         """,
         unsafe_allow_html=True,
     )
@@ -179,7 +205,7 @@ def home_page():
             """
             <div style="display:flex; flex-direction:column; justify-content:center; height:120px;">
                 <h1 style="margin:0; color:#E87500; font-size:36px;" id="overview">Amazon Seller Analytics Dashboard</h1>
-                <h3 style="margin:0; color:#444; font-weight:500;">Capstone Project — Interactive Sales Insights</h3>
+                <h3 style="margin:0; color:#444; font-weight:500;">Capstone Project — Demand and Profit Forecasting</h3>
             </div>
             """,
             unsafe_allow_html=True,
@@ -225,8 +251,6 @@ def home_page():
             unsafe_allow_html=True,
         )
 
-    st.markdown("<br><hr><br>", unsafe_allow_html=True)
-
     # What you can explore
     st.markdown(
         """
@@ -240,8 +264,34 @@ def home_page():
         unsafe_allow_html=True,
     )
 
+    # Project Overview
+    with st.expander("**Project Overview**", expanded=False):
+        st.markdown(
+            """
+            **Objective**
+            
+            This capstone project aims to develop a comprehensive analytics dashboard for Amazon sellers, focusing on demand forecasting and profit optimization. By leveraging two distinct datasets—global corporate sales and customer-level e-commerce transactions—the project provides actionable insights into sales trends, product performance, and profitability drivers.
+            
+            **Key Features**
+            
+            - **Exploratory Data Analysis (EDA)** – Interactive visualizations and statistical summaries to understand data distributions, patterns, and anomalies
+            - **Analytics & Modeling** – Descriptive analytics with KPIs, filters, and charts; supervised machine learning models for predictive insights
+            - **Demand & Profit Forecasting** – Time series forecasting using ARIMA and Random Forest models to predict future revenue, profit, and units sold
+            - **Insights Dashboard** – Comparative analysis and key takeaways from both datasets to support strategic decision-making
+            - **Suggestion System** – User feedback collection to continuously improve the dashboard
+            
+            **Technologies Used**
+            
+            - **Python** – pandas, numpy, scikit-learn, statsmodels for data processing and modeling
+            - **Streamlit** – interactive web framework for building the dashboard
+            - **Altair & Plotly** – data visualization libraries for charts and graphs
+            - **Machine Learning** – regression models, time series forecasting, feature importance analysis
+            """,
+            unsafe_allow_html=True,
+        )
+
     # Dataset details
-    with st.expander("About the Datasets", expanded=False):
+    with st.expander("**About the Datasets**", expanded=False):
         st.markdown(
             """
             <div id="datasets"></div>
@@ -260,7 +310,7 @@ def home_page():
             """,
             unsafe_allow_html=True,
         )
-
+    st.markdown("<br>", unsafe_allow_html=True) 
 
     # Contact anchor
     st.markdown('<div id="contact"></div>', unsafe_allow_html=True)
