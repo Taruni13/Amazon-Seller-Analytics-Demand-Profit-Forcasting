@@ -122,9 +122,12 @@ def add_custom_css(show_navbar=True):
             text-decoration: underline;
         }
 
-        /* Hide default Streamlit header/footer/menu */
-        header, header[role="banner"], #MainMenu, .css-18e3th9, .css-1lsmgbg, .reportview-container .main header {display: none !important;}
-        footer {visibility: hidden;} footer:after {content: ""; visibility: hidden;}
+          /* Hide default Streamlit top header while keeping the sidebar/menu accessible.
+              Removing selectors that target #MainMenu or generic Streamlit classes prevents
+              accidentally hiding the left sidebar or app menu in newer Streamlit versions. */
+          header, header[role="banner"], .css-18e3th9, .reportview-container .main header {display: none !important;}
+          /* Keep Streamlit's menu and sidebar selectors untouched so the navigation remains available. */
+          footer {visibility: hidden;} footer:after {content: ""; visibility: hidden;}
 
         /* Sidebar: match main dashboard background and uppercase page names */
         [data-testid="stSidebar"] { background: var(--pacific-light-bg) !important; }
