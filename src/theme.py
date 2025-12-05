@@ -154,6 +154,31 @@ def add_custom_css(show_navbar=True):
             box-sizing: border-box !important;
         }
 
+        /* Force the sidebar to remain visible and prevent collapsing.
+           This hides the small collapse/expand widget so users cannot hide the sidebar.
+           Use cautiously — if you want users to be able to collapse, remove these rules. */
+        body [data-testid="stSidebar"] {
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            left: 0 !important;
+            margin-left: 0 !important;
+            width: 260px !important;
+            min-width: 260px !important;
+        }
+
+        /* Hide any sidebar toggle controls so the sidebar cannot be collapsed */
+        button[aria-label="Toggle sidebar"],
+        button[aria-label*="Expand"],
+        button[title*="Toggle"],
+        [data-testid="collapsedSidebarToggle"],
+        [data-testid="stSidebarToggleButton"] {
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
         /* Page list / nav items — normalize links to look like vertical nav */
         [data-testid="stSidebar"] ul[role="list"] {
             list-style: none !important;
