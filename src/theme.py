@@ -133,6 +133,53 @@ def add_custom_css(show_navbar=True):
         [data-testid="stSidebar"] { background: var(--pacific-light-bg) !important; }
         [data-testid="stSidebar"] .stText, [data-testid="stSidebar"] .css-1v3fvcr { text-transform: uppercase !important; font-weight:600 !important; color:var(--pacific-dark) !important; }
 
+        /* --- SIDEBAR NAV STYLING (custom look like screenshot) --- */
+        [data-testid="stSidebar"] {
+            width: 260px !important;
+            padding-top: 6px !important;
+            border-right: 0px !important;
+            box-shadow: none !important;
+        }
+
+        /* Make the sidebar container visually distinct and full height */
+        [data-testid="stSidebar"] > div[role="complementary"] {
+            background: #eef3f6 !important;
+            height: 100vh !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        /* Page list / nav items — normalize links to look like vertical nav */
+        [data-testid="stSidebar"] ul[role="list"] {
+            list-style: none !important;
+            padding-left: 6px !important;
+            margin-top: 8px !important;
+        }
+
+        [data-testid="stSidebar"] ul[role="list"] li a,
+        [data-testid="stSidebar"] a[data-testid^="stSidebarNav"] {
+            display: block !important;
+            padding: 10px 14px !important;
+            margin: 6px 6px !important;
+            border-radius: 8px !important;
+            color: #2b2b2b !important;
+            text-transform: none !important;
+            font-weight: 600 !important;
+            text-decoration: none !important;
+        }
+
+        /* Selected / active nav item — pill background */
+        [data-testid="stSidebar"] a[data-testid$="-nav-item"]:not([href]) ,
+        [data-testid="stSidebar"] a.st-a:focus, [data-testid="stSidebar"] a.st-a[aria-current="true"] {
+            background: #e8f0f2 !important;
+            border-left: 8px solid var(--pacific-orange) !important;
+            color: var(--pacific-dark) !important;
+            padding-left: 12px !important;
+        }
+
+        /* Divider line below the page list */
+        [data-testid="stSidebar"] .css-1outpf7 { border-top: 1px solid rgba(0,0,0,0.06) !important; margin-top: 18px !important; }
+
         </style>
         """,
         unsafe_allow_html=True,
