@@ -326,7 +326,7 @@ else:
         if st.button('Train models', key='analytics_train'):
             X, y = prepare_tabular(df_model, target=target, drop_cols=drop_cols)
             st.write('Training on', X.shape[0], 'rows and', X.shape[1], 'features')
-            results = train_models(X, y)
+            results = train_models(X, y, meta={'target': target, 'dataset': 'e-commerce'}, save_path='data/models/model_results.json')
             st.subheader('Results')
             for name, r in results.items():
                 st.write(f"**{name}** — MAE: {r['mae']:.2f} RMSE: {r['rmse']:.2f}")

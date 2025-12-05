@@ -80,8 +80,9 @@ def add_custom_css():
             margin-top: 0 !important;
         }
 
-        /* Force-hide various Streamlit header/menu selectors (different versions use different classes) */
-        header, header[role="banner"], #MainMenu, .css-18e3th9, .css-1lsmgbg, .reportview-container .main header {display: none !important;}
+          /* Force-hide top header while keeping Streamlit menu/sidebar available.
+              Avoid hiding #MainMenu or broad class selectors that may map to sidebar/menu. */
+          header, header[role="banner"], .css-18e3th9, .reportview-container .main header {display: none !important;}
 
         /* Zero out Streamlit container padding that can create extra space */
         .reportview-container .main .block-container, .block-container, main > div.reportview-container > section.main {padding-top: 0px !important; margin-top: 0px !important}

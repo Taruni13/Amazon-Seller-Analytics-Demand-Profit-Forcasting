@@ -6,6 +6,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+import json
+import os
+from datetime import datetime
 
 
 def prepare_tabular(df: pd.DataFrame, target: str, drop_cols: list = None) -> Tuple[pd.DataFrame, pd.Series]:
@@ -19,7 +22,18 @@ def prepare_tabular(df: pd.DataFrame, target: str, drop_cols: list = None) -> Tu
     return X, y
 
 
-def train_models(X: pd.DataFrame, y: pd.Series, test_size: float = 0.2, random_state: int = 42) -> Dict[str, dict]:
+def train_models(X: pd.DataFrame, y: pd.Series, test_size: float = 0.2, random_state: int = 42,
+                 meta: dict = None, save_path: str = "data/models/model_results.json") -> Dict[str, dict]:
+    """Train baseline models and save serializable metrics to disk.
+
+    Parameters:
+    - X, y: training data
+    - test_size, random_state: passed to train_test_split
+    - meta: optional dict saved alongside the results (e.g., target name, dataset)
+    - save_path: JSON file path where results are appended
+
+    Returns dict of trained models and metrics (model objects are returned for immediate UI use).
+    """
     results = {}
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
 
@@ -29,14 +43,56 @@ def train_models(X: pd.DataFrame, y: pd.Series, test_size: float = 0.2, random_s
         'GradientBoosting': GradientBoostingRegressor(n_estimators=50, random_state=random_state),
     }
 
+    serializable_results = {}
+
     for name, m in models.items():
         m.fit(X_train, y_train)
         y_pred = m.predict(X_test)
         mae = mean_absolute_error(y_test, y_pred)
-        # some sklearn versions don't accept the `squared` kwarg — compute RMSE manually
         mse = mean_squared_error(y_test, y_pred)
         rmse = float(np.sqrt(mse))
         results[name] = {'model': m, 'mae': mae, 'rmse': rmse}
+
+        # Prepare serializable slice for disk (no model objects)
+        fi = None
+        if hasattr(m, 'feature_importances_'):
+            try:
+                fi = [float(x) for x in m.feature_importances_.tolist()]
+            except Exception:
+                fi = None
+
+        serializable_results[name] = {
+            'mae': float(mae),
+            'rmse': float(rmse),
+            'feature_importances': fi,
+        }
+
+    # Save results to disk (append entry)
+    try:
+        entry = {
+            'timestamp': datetime.utcnow().isoformat(),
+            'meta': meta or {},
+            'n_features': int(X.shape[1]) if hasattr(X, 'shape') else None,
+            'n_rows': int(X.shape[0]) if hasattr(X, 'shape') else None,
+            'results': serializable_results,
+        }
+
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        if os.path.exists(save_path):
+            try:
+                with open(save_path, 'r', encoding='utf-8') as fh:
+                    data = json.load(fh)
+            except Exception:
+                data = []
+        else:
+            data = []
+
+        data.append(entry)
+        with open(save_path, 'w', encoding='utf-8') as fh:
+            json.dump(data, fh, indent=2)
+    except Exception:
+        # don't break training if saving fails — silently continue
+        pass
 
     return results
 
