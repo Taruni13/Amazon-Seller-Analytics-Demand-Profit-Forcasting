@@ -133,20 +133,25 @@ def add_custom_css(show_navbar=True):
         [data-testid="stSidebar"] { background: var(--pacific-light-bg) !important; }
         [data-testid="stSidebar"] .stText, [data-testid="stSidebar"] .css-1v3fvcr { text-transform: uppercase !important; font-weight:600 !important; color:var(--pacific-dark) !important; }
 
+
         /* --- SIDEBAR NAV STYLING (custom look like screenshot) --- */
+        /* Use min-width instead of forcing a fixed width so Streamlit can
+           collapse the sidebar and still render the collapsed toggle. */
         [data-testid="stSidebar"] {
-            width: 260px !important;
+            min-width: 220px !important;
             padding-top: 6px !important;
             border-right: 0px !important;
             box-shadow: none !important;
+            transition: min-width 180ms ease !important;
         }
 
-        /* Make the sidebar container visually distinct and full height */
+        /* Style the inner complementary panel but do not force full viewport height
+           or absolute sizing (this allows Streamlit to insert the collapsed toggle). */
         [data-testid="stSidebar"] > div[role="complementary"] {
             background: #eef3f6 !important;
-            height: 100vh !important;
             padding-left: 12px !important;
             padding-right: 12px !important;
+            box-sizing: border-box !important;
         }
 
         /* Page list / nav items — normalize links to look like vertical nav */
@@ -175,6 +180,22 @@ def add_custom_css(show_navbar=True):
             border-left: 8px solid var(--pacific-orange) !important;
             color: var(--pacific-dark) !important;
             padding-left: 12px !important;
+        }
+
+        /* Ensure the collapsed/expand toggle is visible and above other elements.
+           Streamlit uses different selectors across versions; target common attributes
+           for the toggle control and add a z-index so it remains clickable. */
+        button[aria-expanded], button[aria-label*="Expand"], button[title*="Expand"] {
+            z-index: 100000 !important;
+            display: block !important;
+            position: relative !important;
+        }
+
+        /* Fallback: some Streamlit versions render a collapsed control with data-testid */
+        [data-testid="collapsedSidebarToggle"], [data-testid="stSidebarToggleButton"] {
+            z-index: 100000 !important;
+            display: block !important;
+            position: relative !important;
         }
 
         /* Divider line below the page list */
