@@ -172,6 +172,15 @@ def add_custom_css():
 def home_page():
     add_custom_css()
 
+    # Ensure the Streamlit sidebar is rendered on the home page
+    # (some browsers or aggressive CSS can collapse the sidebar when no
+    # sidebar widgets are present). This placeholder forces the sidebar
+    # to be created so users can access navigation and controls.
+    try:
+        st.sidebar.markdown("\n")
+    except Exception:
+        pass
+
     # ---------- FLOATING NAVBAR ----------
     st.markdown(
         """
